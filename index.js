@@ -49,12 +49,13 @@ app.use(
 
 //Cadastrar User
 app.post('/user', async (req, res) => {
-    let { email, senha } = req.body;
+    let { email, senha, idade } = req.body;
     try {
         let newSenha = await getCrypto(senha);
         const user = {
             email,
             senha: newSenha,
+            idade,
         };
         await User.create(user);
         res.status(201).json({ message: 'User criado com sucesso!' });
