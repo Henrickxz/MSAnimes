@@ -363,15 +363,15 @@ app.get('/animes-multigenero', async (req, res) => {
     try {
         const animesComMultigenero = await Anime.aggregate([
             {
-                $match: { genero: { $exists: true, $not: { $size: 0 } } } // Filtra animes com a propriedade genero
+                $match: { genero: { $exists: true, $not: { $size: 0 } } } 
             },
             {
                 $project: {
-                    numGeneros: { $size: "$genero" } // Conta o número de gêneros
+                    numGeneros: { $size: "$genero" }
                 }
             },
             {
-                $match: { numGeneros: { $gt: 1 } } // Filtra apenas aqueles com mais de um gênero
+                $match: { numGeneros: { $gt: 1 } } 
             }
         ]);
 
@@ -387,8 +387,8 @@ app.get('/media-idade', async (req, res) => {
         const resultado = await User.aggregate([
             {
                 $group: {
-                    _id: null, // Agrupa todos os documentos
-                    mediaIdade: { $avg: "$idade" } // Calcula a média da idade
+                    _id: null, 
+                    mediaIdade: { $avg: "$idade" } 
                 }
             }
         ]);
