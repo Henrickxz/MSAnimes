@@ -381,6 +381,27 @@ app.get('/animes-multigenero', async (req, res) => {
     }
 });
 
+// Média da Idade dos Usuários
+app.get('/media-idade', async (req, res) => {
+    try {
+        const resultado = await User.aggregate([
+            {
+                $group: {
+                    _id: null, // Agrupa todos os documentos
+                    mediaIdade: { $avg: "$idade" } // Calcula a média da idade
+                }
+            }
+        ]);
+
+        // Se não houver usuários, a média será null
+        const mediaIdade = resultado.length > 0 ? resultado[0].mediaIdade : null;
+
+        res.status(200).json({ mediaIdade });
+    } catch (error) {
+        res.status(500).json({ erro: error.message });
+    }
+});
+
 //Conexão Mongobd
 mongoose.connect(`mongodb://localhost:27017`).then(()=>{
     console.log("Conectamos ao mongoDB")
