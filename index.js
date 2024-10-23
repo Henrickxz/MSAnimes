@@ -347,6 +347,39 @@ app.delete('/deletarmanga/:id', async(req, res) =>{
     }
 })
 
+//Total animes cadastrados
+app.get('/totalanimes', async (req, res) => {
+    try {
+        const totalAnimes = await Anime.countDocuments();
+        res.status(200).json({ total: totalAnimes });
+    } catch (error) {
+        res.status(500).json({ erro: error.message });
+    }
+});
+
+// Total de Animes com Mais de um Gênero
+app.get('/animes-multigenero', async (req, res) => {
+    try {
+        const animesComMultigenero = await Anime.aggregate([
+            {
+                $match: { genero: { $exists: true, $not: { $size: 0 } } } // Filtra animes com a propriedade genero
+            },
+            {
+                $project: {
+                    numGeneros: { $size: "$genero" } // Conta o número de gêneros
+                }
+            },
+            {
+                $match: { numGeneros: { $gt: 1 } } // Filtra apenas aqueles com mais de um gênero
+            }
+        ]);
+
+        res.status(200).json({ total: animesComMultigenero.length });
+    } catch (error) {
+        res.status(500).json({ erro: error.message });
+    }
+});
+
 //Conexão Mongobd
 mongoose.connect(`mongodb://localhost:27017`).then(()=>{
     console.log("Conectamos ao mongoDB")
